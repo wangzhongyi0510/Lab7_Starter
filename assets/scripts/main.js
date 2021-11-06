@@ -28,8 +28,7 @@ const router = new Router(function () {
    */
 
     document.querySelector('section.section--recipe-cards').classList.add('shown');
-    
-    document.querySelector('section.section--recipe-cards').classList.remove('shown');
+    document.querySelector('section.section--recipe-expand').classList.remove('shown');
 });
 
 window.addEventListener('DOMContentLoaded', init);
@@ -55,11 +54,26 @@ async function init() {
  * Detects if there's a service worker, then loads it and begins the process
  * of installing it and getting it running
  */
+//  cite from URL: https://developers.google.com/web/fundamentals/primers/service-workers
 function initializeServiceWorker() {
   /**
    *  TODO - Part 2 Step 1
    *  Initialize the service worker set up in sw.js
    */
+
+   if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('/sw.js').then(function(registration) {
+        // Registration was successful
+        console.log('ServiceWorker registration successful with scope: ', registration.scope);
+      }, function(err) {
+        // registration failed :(
+        console.log('ServiceWorker registration failed: ', err);
+      });
+    });
+  }
+
+
 }
 
 /**
@@ -183,7 +197,7 @@ function bindShowMore() {
 function bindRecipeCard(recipeCard, pageName) {
   recipeCard.addEventListener('click', e => {
     if (e.path[0].nodeName == 'A') return;
-    router.navigate(pageName);
+    router.navigate(pageName,false);
   });
 }
 
@@ -198,6 +212,13 @@ function bindEscKey() {
    * if the escape key is pressed, use your router to navigate() to the 'home'
    * page. This will let us go back to the home page from the detailed page.
    */
+    document.addEventListener('keydown', function(e){
+      //console.log(e.code);
+      if(e.code == 'Escape'){
+        router.navigate('home',false);
+
+      }
+    });
 }
 
 /**
@@ -208,6 +229,21 @@ function bindEscKey() {
  * info in your popstate function)
  */
 function bindPopstate() {
+
+  window.addEventListener('popstate', function(e){
+    console.log(e.state);
+    if(e.state == null){
+      router.navigate('home',true);
+    }else{
+      let curr = e.state['page1'];
+      router.navigate(curr,true);
+    }
+    // if(e.state == null){
+    //   console.log('1');
+    //   router.navigate('home',false);
+    // }
+
+  });
   /**
    * TODO - Part 1 Step 6
    * Finally, add an event listener to the window object for the 'popstate'

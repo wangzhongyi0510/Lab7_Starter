@@ -81,13 +81,15 @@ export class Router {
     }
     //step 3
     if(statePopped == false && window.location.hash != hash){
-      const state = {"page1": page};
-      const title = '';
-      const url = window.location;
+      let state = {"page1": page};
+      let title = '';
+      let url = window.location.origin;
       url = url + hash;
+      console.log(url);
       history.pushState(state, title, url);
     }
     //step 4
     this[page]();
+    //console.log(page);
   }
 }
