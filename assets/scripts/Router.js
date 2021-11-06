@@ -10,7 +10,7 @@
   *     It's accessible via window.location.hash and using them lets you
   *     easily modify the URL without refreshing the page or anything
   */
-
+//
 export class Router {
   static routes = {};
 
